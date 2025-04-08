@@ -13,23 +13,43 @@ export default function Footer() {
       className="text-center text-lg-start text-muted"
       style={{ backgroundColor: "rgba(235, 238, 239, 1)" }}
     >
-      <section className=" d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
+      <section className="d-flex justify-content-center justify-content-lg-between p-4 border-bottom">
         <div className="me-5 d-none d-lg-block">
           <span>Get connected with us on social networks:</span>
         </div>
 
         <div className="text-dark">
-          <a href="https://naveedsportfolio.netlify.app" className="me-4 text-reset">
-            <MDBIcon fa icon="globe" />
+          <a
+            href="https://naveedsportfolio.netlify.app"
+            className="me-4 text-reset"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MDBIcon icon="globe" />
           </a>
-          <a href="https://www.instagram.com/naveed.qadir/" className="me-4 text-reset">
-            <MDBIcon fab icon="instagram" />
+          <a
+            href="https://www.instagram.com/naveed.qadir/"
+            className="me-4 text-reset"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MDBIcon className="fab fa-instagram" />
           </a>
-          <a href="https://www.linkedin.com/in/naveedqadir/" className="me-4 text-reset">
-            <MDBIcon fab icon="linkedin" />
+          <a
+            href="https://www.linkedin.com/in/naveedqadir/"
+            className="me-4 text-reset"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MDBIcon className="fab fa-linkedin" />
           </a>
-          <a href="https://github.com/naveedqadir" className="me-4 text-reset">
-            <MDBIcon fab icon="github" />
+          <a
+            href="https://github.com/naveedqadir"
+            className="me-4 text-reset"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <MDBIcon className="fab fa-github" />
           </a>
         </div>
       </section>
@@ -40,15 +60,16 @@ export default function Footer() {
             <MDBCol md="3" lg="4" xl="3" className="mx-auto mb-4">
               <h6 className="text-uppercase fw-bold mb-4">
                 <MDBIcon icon="gem" className="me-3" />
-                Random
+                About
               </h6>
               <p>
-                "It is an online platform that facilitates the buying and
-                selling of second-hand items. It provides a user-friendly
-                interface for individuals to list their used goods and connect
-                with potential buyers. Users can browse through various
-                categories, including electronics, vehicles, furniture,
-                clothing, and more."
+                "Campus Exchange is a second-hand goods platform tailored for
+                college students, connecting juniors with seniors to access
+                affordable pre-used academic materials, gadgets, and resources.
+                Designed with two interfaces, it empowers admins to list
+                products for sale and users to browse, filter, and purchase
+                items seamlessly. Key features include advanced search filters
+                to quickly find desired products.
               </p>
             </MDBCol>
 
@@ -56,7 +77,7 @@ export default function Footer() {
               <h6 className="text-uppercase fw-bold mb-4">About Us</h6>
               <p>
                 <a href="#!" className="text-reset">
-                  About Random Group
+                  About Campus Group
                 </a>
               </p>
               <p>
@@ -119,11 +140,11 @@ export default function Footer() {
               <h6 className="text-uppercase fw-bold mb-4">Contact</h6>
               <p>
                 <MDBIcon icon="home" className="me-2" />
-                Jaypee Kosmos, Noida
+                KNIT , Sultanpur
               </p>
               <p>
                 <MDBIcon icon="envelope" className="me-3" />
-                naveedqadir0@gmail.com
+                abhinav.21604@knit.ac.in
               </p>
               <p>
                 <MDBIcon icon="phone" className="me-3" /> + 91 6005871152
@@ -137,9 +158,14 @@ export default function Footer() {
         className="text-center text-white p-4"
         style={{ backgroundColor: "rgba(0, 47, 52, 1)" }}
       >
-        © 2021 Copyright:
-        <a className="fw-bold text-white" href="https://randomolx.vercel.app/">
-          Random.com
+        © {new Date().getFullYear()} Copyright:{" "}
+        <a
+          className="fw-bold text-white"
+          href="https://randomolx.vercel.app/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Campus Exchange
         </a>
       </div>
     </MDBFooter>

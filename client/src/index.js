@@ -1,11 +1,11 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import { GoogleOAuthProvider } from '@react-oauth/google';
-import 'mdb-react-ui-kit/dist/css/mdb.min.css';
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import { GoogleOAuthProvider } from "@react-oauth/google";
+import "mdb-react-ui-kit/dist/css/mdb.min.css";
 import "@fortawesome/fontawesome-free/css/all.min.css";
-import { ChakraProvider, extendTheme } from '@chakra-ui/react';
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
 // 2. Extend the theme to include custom colors, fonts, etc
 const theme = extendTheme({
@@ -17,14 +17,14 @@ const theme = extendTheme({
   },
 });
 
-const root = ReactDOM.createRoot(document.getElementById('root'));
+const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <ChakraProvider theme={theme}>
-  <GoogleOAuthProvider clientId="792060318576-1mqeijfldhmbfck89vprnv7p1vm6tv6r.apps.googleusercontent.com">
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
-  </GoogleOAuthProvider>
+    <GoogleOAuthProvider clientId="412167250535-v1fhhqqqkk6v0nt53iv7tk6jk0qgru4p.apps.googleusercontent.com">
+      <React.StrictMode>
+        <App />
+      </React.StrictMode>
+    </GoogleOAuthProvider>
   </ChakraProvider>
 );
 

@@ -29,11 +29,14 @@ export default function MyAds() {
     const fetchAds = async () => {
       setIsLoading(true);
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("https://random-backend-yjzj.onrender.com/myads_view", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://random-backend-yjzj.onrender.com/myads_view",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = response.data;
       setAds(data);
       setIsLoading(false);
@@ -42,10 +45,12 @@ export default function MyAds() {
   }, []);
 
   if (ads.length === 0 && isLoading === false) {
-    return <div>
-      <CatNavbar />
-   <NotListedAnything />
-    </div>
+    return (
+      <div>
+        <CatNavbar />
+        <NotListedAnything />
+      </div>
+    );
   }
 
   const handleDelete = async (id) => {
@@ -53,11 +58,14 @@ export default function MyAds() {
     setDeletingCardId(id); // Set the ID of the card being deleted
     const token = localStorage.getItem("authToken");
     try {
-      await axios.delete(`https://random-backend-yjzj.onrender.com/myads_delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `https://random-backend-yjzj.onrender.com/myads_delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setAds((prevAds) => prevAds.filter((ad) => ad._id !== id));
       toast({
         title: "Ad Deleted",
@@ -84,7 +92,12 @@ export default function MyAds() {
       {isLoading ? (
         <div className="back">
           <div className="lo-container">
-            <ReactLoading type="spin" color="green" height={"10%"} width={"10%"} />
+            <ReactLoading
+              type="spin"
+              color="green"
+              height={"10%"}
+              width={"10%"}
+            />
           </div>
         </div>
       ) : (
@@ -132,23 +145,23 @@ export default function MyAds() {
               </Card>
             ))}
             {hasMoreProductsToLoad && (
-        <Button
-          className="mb-2"
-          bgGradient="linear(to-r, teal.400, cyan.600)"
-          color="white"
-          _hover={{
-            bgGradient: "linear(to-r, teal.600, cyan.800)",
-          }}
-          _active={{
-            bgGradient: "linear(to-r, teal.800, cyan.900)",
-          }}
-          onClick={() => {
-            setVisibleProducts((prev) => prev + 10);
-          }}
-        >
-          Load More
-        </Button>
-)}
+              <Button
+                className="mb-2"
+                bgGradient="linear(to-r, teal.400, cyan.600)"
+                color="white"
+                _hover={{
+                  bgGradient: "linear(to-r, teal.600, cyan.800)",
+                }}
+                _active={{
+                  bgGradient: "linear(to-r, teal.800, cyan.900)",
+                }}
+                onClick={() => {
+                  setVisibleProducts((prev) => prev + 10);
+                }}
+              >
+                Load More
+              </Button>
+            )}
           </Box>
         </>
       )}

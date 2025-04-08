@@ -27,7 +27,7 @@ import Modallogin from "./Modallogin";
 import Loading from "./resources/Loading";
 import NotFoundComponent from "./resources/NotFound";
 
-const PreviewAd = ({auth}) => {
+const PreviewAd = ({ auth }) => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [data, setData] = useState({});
@@ -35,12 +35,14 @@ const PreviewAd = ({auth}) => {
   const [loading, setLoading] = useState(true);
   const [NotFound, setNotFound] = useState(false);
   const [isRemoving, setIsRemoving] = useState(false);
+  const [isPaymentLoading, setIsPaymentLoading] = useState(false);
+  const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
   const authToken = localStorage.getItem("authToken");
   const toast = useToast();
 
-    // for register and login
-    const [staticModal, setStaticModal] = useState(false);
-    const toggleShow = () => setStaticModal(!staticModal);
+  // for register and login
+  const [staticModal, setStaticModal] = useState(false);
+  const toggleShow = () => setStaticModal(!staticModal);
 
   const fetchData = async () => {
     try {
@@ -55,20 +57,18 @@ const PreviewAd = ({auth}) => {
       );
       setOwn(response.data.own);
       setData(response.data.product);
-      setLoading(false); // Set loading state to false when data is fetched successfully
+      setLoading(false);
     } catch (error) {
-      // console.error(error);
-      // when not loged in
-      // make changes for not loged in user as authToken is not updated so data is not recieved .
       setOwn(false);
-      try{
-        const notlogedindata = await axios.post(`https://random-backend-yjzj.onrender.com/previewad/notloggedin/${id}`);
-      setData(notlogedindata.data.product);
-      setLoading(false); // Set loading state to false when data is fetched successfully
-      }
-      catch(e){
+      try {
+        const notlogedindata = await axios.post(
+          `https://random-backend-yjzj.onrender.com/previewad/notloggedin/${id}`
+        );
+        setData(notlogedindata.data.product);
         setLoading(false);
-        setNotFound(true); 
+      } catch (e) {
+        setLoading(false);
+        setNotFound(true);
       }
     }
   };
@@ -77,21 +77,164 @@ const PreviewAd = ({auth}) => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const checkRazorpay = () => {
+      if (window.Razorpay) {
+        setIsRazorpayLoaded(true);
+      }
+    };
+    checkRazorpay();
+    const timeoutId = setTimeout(checkRazorpay, 1000);
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  const handlePayment = async () => {
+    try {
+      if (!isRazorpayLoaded) {
+        throw new Error("Razorpay SDK not loaded");
+      }
+
+      if (!authToken) {
+        toast({
+          title: "Authentication Required",
+          description: "Please login to make a purchase",
+          status: "warning",
+          duration: 5000,
+          isClosable: true,
+        });
+        return;
+      }
+
+      setIsPaymentLoading(true);
+
+      // Get Razorpay Key
+      const keyResponse = await axios.get("http://localhost:5000/api/getkey", {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
+
+      // Create Order
+      const amount = Math.round(data.price * 100); // Convert to paise
+      const orderResponse = await axios.post(
+        "http://localhost:5000/api/checkout",
+        {
+          amount: amount,
+          productId: data._id,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      const { order } = orderResponse.data;
+
+      // Initialize Razorpay options
+      const options = {
+        key: keyResponse.data.key,
+        amount: order.amount,
+        currency: "INR",
+        name: "College Exchange",
+        description: `Payment for ${data.title}`,
+        order_id: order.id,
+        prefill: {
+          name: localStorage.getItem("authname") || "",
+          email: localStorage.getItem("authemail") || "",
+          contact: localStorage.getItem("authphone") || "",
+        },
+        handler: async function (response) {
+          try {
+            const verificationResponse = await axios.post(
+              "http://localhost:5000/api/paymentverification",
+              {
+                razorpay_order_id: response.razorpay_order_id,
+                razorpay_payment_id: response.razorpay_payment_id,
+                razorpay_signature: response.razorpay_signature,
+              },
+              {
+                headers: {
+                  Authorization: `Bearer ${authToken}`,
+                },
+              }
+            );
+
+            if (verificationResponse.data.success) {
+              toast({
+                title: "Payment Successful",
+                status: "success",
+                duration: 5000,
+                isClosable: true,
+              });
+            }
+          } catch (error) {
+            toast({
+              title: "Payment Verification Failed",
+              description:
+                error.response?.data?.message || "Please contact support",
+              status: "error",
+              duration: 5000,
+              isClosable: true,
+            });
+          }
+        },
+        modal: {
+          ondismiss: function () {
+            setIsPaymentLoading(false);
+          },
+        },
+        theme: {
+          color: "#3182CE",
+        },
+      };
+
+      // Create Razorpay instance and open payment modal
+      const razorpay = new window.Razorpay(options);
+
+      razorpay.on("payment.failed", function (response) {
+        toast({
+          title: "Payment Failed",
+          description: response.error.description,
+          status: "error",
+          duration: 5000,
+          isClosable: true,
+        });
+      });
+
+      razorpay.open();
+    } catch (error) {
+      toast({
+        title: "Payment Failed",
+        description: error.response?.data?.message || error.message,
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+    } finally {
+      setIsPaymentLoading(false);
+    }
+  };
+
   if (loading) {
     return <Loading />;
   }
   if (NotFound) {
-      return <NotFoundComponent />;
+    return <NotFoundComponent />;
   }
 
   const handleRemove = async () => {
     try {
       setIsRemoving(true);
-      await axios.delete(`https://random-backend-yjzj.onrender.com/myads_delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      await axios.delete(
+        `https://random-backend-yjzj.onrender.com/myads_delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       setIsRemoving(false);
       toast({
         title: "Ad Removed",
@@ -101,12 +244,8 @@ const PreviewAd = ({auth}) => {
         isClosable: true,
       });
       navigate("/myads");
-
-      console.log("ok");
     } catch (error) {
       setIsRemoving(false);
-
-      console.error(error);
       toast({
         title: "Error",
         description: "An error occurred while removing the ad.",
@@ -116,15 +255,15 @@ const PreviewAd = ({auth}) => {
       });
     }
   };
-  
-  const handleClick = async function(){
-    if(auth){
-     window.location.href = `/chat/${id}/${data.useremail}`
+
+  const handleClick = async function () {
+    if (auth) {
+      window.location.href = `/chat/${id}/${data.useremail}`;
+    } else {
+      toggleShow();
     }
-    else{
-    toggleShow();
-    }
-  }
+  };
+
   const address = data.address?.[0] || {};
 
   const ProductPics = Object.keys(data)
@@ -133,9 +272,7 @@ const PreviewAd = ({auth}) => {
 
   const createdAt = new Date(data.createdAt);
   const now = new Date();
-  // Calculate the time difference in milliseconds
   const timeDiff = now.getTime() - createdAt.getTime();
-  // Convert milliseconds to days
   const daysAgo = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
 
   return (
@@ -300,6 +437,15 @@ const PreviewAd = ({auth}) => {
                         onClick={handleClick}
                       >
                         Chat With Seller
+                      </Button>
+                      <Button
+                        colorScheme="blue"
+                        isLoading={isPaymentLoading}
+                        onClick={handlePayment}
+                        loadingText="Processing Payment"
+                        mt={2}
+                      >
+                        Buy Now
                       </Button>
                     </div>
                   </Stack>

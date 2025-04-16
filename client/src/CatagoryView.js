@@ -9,7 +9,6 @@ import SearchNotFound from "./resources/SearchNotFound";
 import CatNavbar from "./CatNavbar";
 import Loading from "./resources/Loading";
 
-
 export default function CatagoryView() {
   const { category } = useParams();
   const [products, setProducts] = useState([]);
@@ -29,7 +28,9 @@ export default function CatagoryView() {
 
     const getProductsbyCategory = async () => {
       try {
-        const response = await axios.get(`https://random-backend-yjzj.onrender.com/getProductsbyCategory/${category}`);
+        const response = await axios.get(
+          `http://localhost:5000/getProductsbyCategory/${category}`
+        );
         setProducts(response.data);
         setLoading(false);
       } catch (err) {
@@ -57,7 +58,13 @@ export default function CatagoryView() {
     <Box>
       <CatNavbar />
       <Container maxW="container.xl">
-        <Grid templateColumns={{ base: "1fr", md: "repeat(auto-fit, minmax(250px, 1fr))" }} gap={4}>
+        <Grid
+          templateColumns={{
+            base: "1fr",
+            md: "repeat(auto-fit, minmax(250px, 1fr))",
+          }}
+          gap={4}
+        >
           {products.slice(0, visibleproducts).map((product) => (
             <GridItem key={product._id}>
               <Link to={`/preview_ad/${product._id}`}>
@@ -67,23 +74,23 @@ export default function CatagoryView() {
           ))}
         </Grid>
         {hasMoreProductsToLoad && (
-        <Button
-          className="mb-2"
-          bgGradient="linear(to-r, teal.400, cyan.600)"
-          color="white"
-          _hover={{
-            bgGradient: "linear(to-r, teal.600, cyan.800)",
-          }}
-          _active={{
-            bgGradient: "linear(to-r, teal.800, cyan.900)",
-          }}
-          onClick={() => {
-            setVisibleProducts((prev) => prev + 10);
-          }}
-        >
-          Load More
-        </Button>
-)}
+          <Button
+            className="mb-2"
+            bgGradient="linear(to-r, teal.400, cyan.600)"
+            color="white"
+            _hover={{
+              bgGradient: "linear(to-r, teal.600, cyan.800)",
+            }}
+            _active={{
+              bgGradient: "linear(to-r, teal.800, cyan.900)",
+            }}
+            onClick={() => {
+              setVisibleProducts((prev) => prev + 10);
+            }}
+          >
+            Load More
+          </Button>
+        )}
       </Container>
     </Box>
   );

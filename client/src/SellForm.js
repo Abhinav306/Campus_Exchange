@@ -20,7 +20,6 @@ import { categories } from "./resources/Catagories";
 import NotFound from "./resources/NotFound";
 import { useToast } from "@chakra-ui/react";
 
-
 export default function SellForm() {
   const { category } = useParams();
   const { item } = useParams();
@@ -64,7 +63,6 @@ export default function SellForm() {
   const [name, setName] = useState();
   const toast = useToast();
 
-
   const handleFileChange = (file) => {
     // Handle the uploaded file here
     setUploadedFiles((prevUploadedFiles) => [...prevUploadedFiles, file]);
@@ -86,14 +84,12 @@ export default function SellForm() {
     setDescription(description);
   };
 
-
   function handleNameSelect(name) {
     setName(name);
   }
   function handleImageSelect(img) {
-   setImage(img);
+    setImage(img);
   }
-  
 
   // console.log("Title:", title);
   // console.log("Description:", description);
@@ -105,69 +101,56 @@ export default function SellForm() {
   // console.log("Image:", image);
   // console.log("Name:", name);
 
-async function handleFormSubmit(event) {
-  event.preventDefault();
+  async function handleFormSubmit(event) {
+    event.preventDefault();
 
-const errors = [];
+    const errors = [];
 
-if (!title) {
-  errors.push("Please add title");
-}
-if (!description) {
-  errors.push("Please add description");
-}
-if ((address.length === 0 && addorloc==="address")|| (location.length === 0 && addorloc==="location")){
-  errors.push("Please add address or location");
-}
-if (uploadedFiles.length === 0) {
-  errors.push("Please upload a file");
-}
-if (!name) {
-  errors.push("Please add your name");
-}
-if (!price) {
-  errors.push("Please provide a price");
-}
+    if (!title) {
+      errors.push("Please add title");
+    }
+    if (!description) {
+      errors.push("Please add description");
+    }
+    if (
+      (address.length === 0 && addorloc === "address") ||
+      (location.length === 0 && addorloc === "location")
+    ) {
+      errors.push("Please add address or location");
+    }
+    if (uploadedFiles.length === 0) {
+      errors.push("Please upload a file");
+    }
+    if (!name) {
+      errors.push("Please add your name");
+    }
+    if (!price) {
+      errors.push("Please provide a price");
+    }
 
-if (errors.length > 0) {
-  toast({
-    title: "Error",
-    description: <div dangerouslySetInnerHTML={{ __html: errors.join("<br>") }} />,
-    status: "error",
-    duration: 5000,
-    isClosable: true,
-  });
+    if (errors.length > 0) {
+      toast({
+        title: "Error",
+        description: (
+          <div dangerouslySetInnerHTML={{ __html: errors.join("<br>") }} />
+        ),
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
 
-  return;
-}
-  setLoading("post");
+      return;
+    }
+    setLoading("post");
 
-  try {
-    const [x] = addorloc === "address" ? [address] : [location];
+    try {
+      const [x] = addorloc === "address" ? [address] : [location];
 
-    const [imageUrl, picUrls] = await Promise.all([
-      image
-        ? (async () => {
-            const formData = new FormData();
-            formData.append("file", image);
-            formData.append("upload_preset", "random");
-            const { data } = await axios.post(
-              "https://api.cloudinary.com/v1_1/dlpjayfhf/image/upload",
-              formData,
-              {
-                headers: {
-                  Accept: "multipart/form-data",
-                },
-              }
-            );
-            return data.secure_url;
-          })()
-        : "",
-      uploadedFiles.length > 0
-        ? Promise.all(
-            uploadedFiles.map(async (file) => {
+      const [imageUrl, picUrls] = await Promise.all([
+        image
+          ? (async () => {
               const formData = new FormData();
-              formData.append("file", file);
+              formData.append("file", image);
               formData.append("upload_preset", "random");
               const { data } = await axios.post(
                 "https://api.cloudinary.com/v1_1/dlpjayfhf/image/upload",
@@ -179,38 +162,59 @@ if (errors.length > 0) {
                 }
               );
               return data.secure_url;
-            })
-          )
-        : [],
-    ]);
-    
-    const token = localStorage.getItem('authToken');
-    await axios.post("https://random-backend-yjzj.onrender.com/add_product", {
-      title,
-      description,
-      address: x,
-      price,
-      uploadedFiles: picUrls,
-      image: imageUrl,
-      name,
-      catagory: category,
-      subcatagory: item,
-    }, {
-      headers: {
-        'Authorization': `Bearer ${token}`
-      }
-    });
-    setLoading("redirect");
+            })()
+          : "",
+        uploadedFiles.length > 0
+          ? Promise.all(
+              uploadedFiles.map(async (file) => {
+                const formData = new FormData();
+                formData.append("file", file);
+                formData.append("upload_preset", "random");
+                const { data } = await axios.post(
+                  "https://api.cloudinary.com/v1_1/dlpjayfhf/image/upload",
+                  formData,
+                  {
+                    headers: {
+                      Accept: "multipart/form-data",
+                    },
+                  }
+                );
+                return data.secure_url;
+              })
+            )
+          : [],
+      ]);
 
-  } catch (error) {
-    console.log(error);
+      const token = localStorage.getItem("authToken");
+      await axios.post(
+        "http://localhost:5000/add_product",
+        {
+          title,
+          description,
+          address: x,
+          price,
+          uploadedFiles: picUrls,
+          image: imageUrl,
+          name,
+          catagory: category,
+          subcatagory: item,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      setLoading("redirect");
+    } catch (error) {
+      console.log(error);
+    }
   }
-}
   return (
     <div>
       {isValidCategory && isValidItem ? (
         <MDBContainer style={{ textAlign: "start" }} className="mt-3 mb-3">
-          {loading === "post"? (
+          {loading === "post" ? (
             <div className="back">
               <div className="lo-container">
                 <ReactLoading
@@ -223,7 +227,7 @@ if (errors.length > 0) {
             </div>
           ) : (
             <MDBCard>
-              <MDBCardHeader>                
+              <MDBCardHeader>
                 <h5>
                   <b>SELECTED CATEGORY</b>
                 </h5>
@@ -297,7 +301,10 @@ if (errors.length > 0) {
                 <MDBListGroupItem>
                   <h5>
                     <b>REVIEW YOUR DETAILS</b>
-                    <Addetails onNameSelect={handleNameSelect} onImageSelect={handleImageSelect} />
+                    <Addetails
+                      onNameSelect={handleNameSelect}
+                      onImageSelect={handleImageSelect}
+                    />
                   </h5>
                 </MDBListGroupItem>
                 <MDBListGroupItem>
@@ -322,7 +329,7 @@ if (errors.length > 0) {
       ) : (
         <NotFound />
       )}
-      {loading === "redirect" && navigate('/adsuccess')}
+      {loading === "redirect" && navigate("/adsuccess")}
     </div>
   );
 }

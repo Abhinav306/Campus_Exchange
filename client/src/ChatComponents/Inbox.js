@@ -13,7 +13,7 @@ export default function Inbox() {
   useEffect(() => {
     const fetchNewChats = async () => {
       try {
-        const response = await axios.get("https://random-backend-yjzj.onrender.com/api/newchats", {
+        const response = await axios.get("http://localhost:5000/api/newchats", {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -53,7 +53,7 @@ export default function Inbox() {
     return <Loading />;
   }
 
-  if(newChats.length === 0) { 
+  if (newChats.length === 0) {
     return <Heading>No Chats Yet</Heading>;
   }
 

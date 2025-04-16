@@ -15,6 +15,7 @@ const authRoutes = require("./authRoutes/authRoutes");
 const googleAuthRoutes = require("./authRoutes/googleAuthRoutes");
 const chatRoutes = require("./chatRoutes/chatRoutes");
 const profileRoutes = require("./profileRoutes/profileRoutes");
+const recommendationRoutes = require("./recommendationRoutes/recommendationRoutes");
 
 // Cloudinary configuration
 const cloudinary = require("cloudinary").v2;
@@ -90,6 +91,7 @@ app.use("/", authRoutes);
 app.use("/", googleAuthRoutes);
 app.use("/", profileRoutes);
 app.use("/", chatRoutes);
+app.use("/", recommendationRoutes);
 
 // Payment Routes
 app.get("/api/getkey", authenticateUser, (req, res) => {
@@ -131,12 +133,10 @@ app.post("/api/checkout", authenticateUser, async (req, res) => {
     res.status(200).json({ success: true, order });
   } catch (error) {
     console.error("Checkout error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Failed to create order",
-      });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Failed to create order",
+    });
   }
 });
 
@@ -169,12 +169,10 @@ app.post("/api/paymentverification", authenticateUser, async (req, res) => {
     }
   } catch (error) {
     console.error("Verification error:", error);
-    res
-      .status(500)
-      .json({
-        success: false,
-        message: error.message || "Payment verification failed",
-      });
+    res.status(500).json({
+      success: false,
+      message: error.message || "Payment verification failed",
+    });
   }
 });
 

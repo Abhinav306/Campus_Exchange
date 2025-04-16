@@ -4,7 +4,7 @@ import { MDBBtn, MDBTextArea } from "mdb-react-ui-kit";
 import React, { useState } from "react";
 import { Form } from "react-bootstrap";
 
-export default function SendChat({ id , to }) {
+export default function SendChat({ id, to }) {
   const [message, setMessage] = useState("");
   const authToken = localStorage.getItem("authToken");
   const toast = useToast();
@@ -16,7 +16,7 @@ export default function SendChat({ id , to }) {
     e.preventDefault();
     if (message) {
       const response = await axios.post(
-        "https://random-backend-yjzj.onrender.com/sendMessage",
+        "http://localhost:5000/sendMessage",
         { message, id, to },
         {
           headers: {

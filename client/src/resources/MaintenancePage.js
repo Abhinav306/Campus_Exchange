@@ -1,4 +1,4 @@
-import { Box, Heading, Text, Button, Flex } from '@chakra-ui/react';
+import { Box, Heading, Text, Button, Flex } from "@chakra-ui/react";
 
 const MaintenancePage = () => {
   return (
@@ -19,9 +19,8 @@ const MaintenancePage = () => {
           Server is Down
         </Heading>
         <Text fontSize="18px" mt={3} mb={2}>
-          Why did the website go for free hosting?
+          Sorry!Servers are Down right now.
           <br />
-          Because it wanted to save up for a domain vacation! 😄
         </Text>
         <Text color={"gray.500"} mb={6}>
           We apologize for the inconvenience.
@@ -32,5 +31,3 @@ const MaintenancePage = () => {
 };
 
 export default MaintenancePage;
-
-

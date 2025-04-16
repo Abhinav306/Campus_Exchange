@@ -37,9 +37,7 @@ function Home() {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get(
-        "https://random-backend-yjzj.onrender.com/getProducts"
-      );
+      const response = await axios.get("http://localhost:5000/getProducts");
       setProducts(response.data);
       setLoading(false);
     } catch (err) {

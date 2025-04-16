@@ -32,7 +32,7 @@ export default function SearchProfile() {
   }
   useEffect(() => {
     axios
-      .get(`https://random-backend-yjzj.onrender.com/profilesearch?useremail=${useremail}`)
+      .get(`http://localhost:5000/profilesearch?useremail=${useremail}`)
       .then((response) => {
         setProfileData(response.data);
         setIsLoading(false);
@@ -44,7 +44,7 @@ export default function SearchProfile() {
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          `https://random-backend-yjzj.onrender.com/getProductsbyemail?useremail=${useremail}`
+          `http://localhost:5000/getProductsbyemail?useremail=${useremail}`
         );
         setProducts(response.data);
         setIsLoading(false);
@@ -141,7 +141,7 @@ export default function SearchProfile() {
               <>
                 <Box className="container" p={5}>
                   <Heading size="lg" mb={4}>
-                  Products of {name}
+                    Products of {name}
                   </Heading>
                   <SimpleGrid columns={{ sm: 1, md: 2, lg: 3 }} spacing={4}>
                     {products.slice(0, visibleproducts).map((ad) => (
@@ -149,23 +149,23 @@ export default function SearchProfile() {
                     ))}
                   </SimpleGrid>
                   {hasMoreProductsToLoad && (
-        <Button
-          className="mb-2"
-          bgGradient="linear(to-r, teal.400, cyan.600)"
-          color="white"
-          _hover={{
-            bgGradient: "linear(to-r, teal.600, cyan.800)",
-          }}
-          _active={{
-            bgGradient: "linear(to-r, teal.800, cyan.900)",
-          }}
-          onClick={() => {
-            setVisibleProducts((prev) => prev + 10);
-          }}
-        >
-          Load More
-        </Button>
-)}
+                    <Button
+                      className="mb-2"
+                      bgGradient="linear(to-r, teal.400, cyan.600)"
+                      color="white"
+                      _hover={{
+                        bgGradient: "linear(to-r, teal.600, cyan.800)",
+                      }}
+                      _active={{
+                        bgGradient: "linear(to-r, teal.800, cyan.900)",
+                      }}
+                      onClick={() => {
+                        setVisibleProducts((prev) => prev + 10);
+                      }}
+                    >
+                      Load More
+                    </Button>
+                  )}
                 </Box>
               </>
             )}

@@ -47,7 +47,7 @@ const PreviewAd = ({ auth }) => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        `https://random-backend-yjzj.onrender.com/previewad/${id}`,
+        `http://localhost:5000/previewad/${id}`,
         {},
         {
           headers: {
@@ -62,7 +62,7 @@ const PreviewAd = ({ auth }) => {
       setOwn(false);
       try {
         const notlogedindata = await axios.post(
-          `https://random-backend-yjzj.onrender.com/previewad/notloggedin/${id}`
+          `http://localhost:5000/previewad/notloggedin/${id}`
         );
         setData(notlogedindata.data.product);
         setLoading(false);
@@ -227,14 +227,11 @@ const PreviewAd = ({ auth }) => {
   const handleRemove = async () => {
     try {
       setIsRemoving(true);
-      await axios.delete(
-        `https://random-backend-yjzj.onrender.com/myads_delete/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
+      await axios.delete(`http://localhost:5000/myads_delete/${id}`, {
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
       setIsRemoving(false);
       toast({
         title: "Ad Removed",

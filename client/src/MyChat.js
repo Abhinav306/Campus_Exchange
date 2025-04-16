@@ -57,7 +57,7 @@ export default function MyChat() {
         setChatScreen(true);
         try {
           const response = await axios.post(
-            `https://random-backend-yjzj.onrender.com/previewad/${id}`,
+            `http://localhost:5000/previewad/${id}`,
             {},
             {
               headers: {
@@ -76,9 +76,9 @@ export default function MyChat() {
         setChatScreen(false);
       } else {
         setChatScreen(true);
-        try{
+        try {
           axios
-            .get(`https://random-backend-yjzj.onrender.com/profilesearch?useremail=${useremail}`)
+            .get(`http://localhost:5000/profilesearch?useremail=${useremail}`)
             .then((response) => {
               setProfileData(response.data);
               setIsLoading(false);
@@ -87,12 +87,10 @@ export default function MyChat() {
               setIsLoading(false);
               setChatScreen(false);
             });
-          }
-          catch{
-            setChatScreen(false);
-          }
+        } catch {
+          setChatScreen(false);
+        }
       }
-
     } else {
       setIsLoading(false);
     }
@@ -106,7 +104,7 @@ export default function MyChat() {
     setIsLoading(true);
     axios
       .post(
-        `https://random-backend-yjzj.onrender.com/deletechat/${id}`,
+        `http://localhost:5000/deletechat/${id}`,
         {},
         {
           headers: {

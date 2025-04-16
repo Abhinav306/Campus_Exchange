@@ -1,4 +1,5 @@
 import React from "react";
+import ChatBot from "./ProductCards/ChatBot";
 import {
   MDBFooter,
   MDBContainer,
@@ -28,7 +29,7 @@ export default function Footer() {
             <MDBIcon icon="globe" />
           </a>
           <a
-            href="https://www.instagram.com/naveed.qadir/"
+            href="https://www.instagram.com/abhinavsinghal791/"
             className="me-4 text-reset"
             target="_blank"
             rel="noopener noreferrer"
@@ -36,7 +37,7 @@ export default function Footer() {
             <MDBIcon className="fab fa-instagram" />
           </a>
           <a
-            href="https://www.linkedin.com/in/naveedqadir/"
+            href="https://www.linkedin.com/in/abhinav791/"
             className="me-4 text-reset"
             target="_blank"
             rel="noopener noreferrer"
@@ -44,7 +45,7 @@ export default function Footer() {
             <MDBIcon className="fab fa-linkedin" />
           </a>
           <a
-            href="https://github.com/naveedqadir"
+            href="https://github.com/Abhinav306"
             className="me-4 text-reset"
             target="_blank"
             rel="noopener noreferrer"
@@ -161,13 +162,14 @@ export default function Footer() {
         © {new Date().getFullYear()} Copyright:{" "}
         <a
           className="fw-bold text-white"
-          href="https://randomolx.vercel.app/"
+          // href="https://randomolx.vercel.app/"
           target="_blank"
           rel="noopener noreferrer"
         >
           Campus Exchange
         </a>
       </div>
+      <ChatBot />
     </MDBFooter>
   );
 }

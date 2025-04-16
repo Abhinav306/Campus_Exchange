@@ -80,7 +80,9 @@ export default function UserProfileEdit() {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const response = await fetch(`https://random-backend-yjzj.onrender.com/verification-status?email=${authemail}`);
+        const response = await fetch(
+          `http://localhost:5000/verification-status?email=${authemail}`
+        );
         const data = await response.json();
         // Update the isVerified state based on the response
         setIsVerified(data.isVerified);
@@ -105,7 +107,10 @@ export default function UserProfileEdit() {
   const handleSendOtp = async (event) => {
     setSending(true);
     try {
-      const response = await axios.post("https://random-backend-yjzj.onrender.com/send-verification-email", { email });
+      const response = await axios.post(
+        "http://localhost:5000/send-verification-email",
+        { email }
+      );
       // Handle the response from the server
       console.log(response); // or perform any other action
       Setverifyscr(true);
@@ -140,7 +145,7 @@ export default function UserProfileEdit() {
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await axios.post(
-        "https://random-backend-yjzj.onrender.com/verify-email",
+        "http://localhost:5000/verify-email",
         { pin: value, email: email },
         {
           headers: {
@@ -192,48 +197,48 @@ export default function UserProfileEdit() {
 
   const handleFormSubmit = async (event) => {
     event.preventDefault();
-  
+
     // Validate phone number
     if (phoneNumber.length !== 10) {
       toast({
-        title: 'Error',
-        description: 'Phone number should be 10 digits.',
-        status: 'error',
+        title: "Error",
+        description: "Phone number should be 10 digits.",
+        status: "error",
         duration: 5000,
         isClosable: true,
       });
       return;
     }
-  
+
     // Set loading state to true
     setIsLoading(true);
-  
+
     try {
       let imageUrlToSend = imageUrl;
-  
+
       if (imageUrl.length > 200) {
         const formData = new FormData();
-        formData.append('file', imageUrl);
-        formData.append('upload_preset', 'random');
-  
+        formData.append("file", imageUrl);
+        formData.append("upload_preset", "random");
+
         const { data } = await axios.post(
-          'https://api.cloudinary.com/v1_1/dlpjayfhf/image/upload',
+          "https://api.cloudinary.com/v1_1/dlpjayfhf/image/upload",
           formData,
           {
             headers: {
-              'Content-Type': 'multipart/form-data',
+              "Content-Type": "multipart/form-data",
             },
           }
         );
-  
+
         imageUrlToSend = data.secure_url;
       }
-  
+
       // Retrieve the authorization token from localStorage
-      const authToken = localStorage.getItem('authToken');
-  
+      const authToken = localStorage.getItem("authToken");
+
       const response = await axios.post(
-        'https://random-backend-yjzj.onrender.com/profile_edit',
+        "http://localhost:5000/profile_edit",
         { name, imageUrl: imageUrlToSend, phoneNumber },
         {
           headers: {
@@ -241,27 +246,27 @@ export default function UserProfileEdit() {
           },
         }
       );
-      
-      localStorage.setItem('authname', response.data.name);
-      localStorage.setItem('authphone', response.data.phone);
-      localStorage.setItem('authpicture', response.data.picture);
-  
+
+      localStorage.setItem("authname", response.data.name);
+      localStorage.setItem("authphone", response.data.phone);
+      localStorage.setItem("authpicture", response.data.picture);
+
       // Handle the successful response and display a success toast
       toast({
-        title: 'Success',
-        description: 'Profile updated successfully.',
-        status: 'success',
+        title: "Success",
+        description: "Profile updated successfully.",
+        status: "success",
         duration: 5000,
         isClosable: true,
       });
     } catch (error) {
-      console.error('Error during image upload or profile update:', error);
-  
+      console.error("Error during image upload or profile update:", error);
+
       // Handle the error response and display an error toast
       toast({
-        title: 'Error',
-        description: 'An error occurred while updating the profile.',
-        status: 'error',
+        title: "Error",
+        description: "An error occurred while updating the profile.",
+        status: "error",
         duration: 5000,
         isClosable: true,
       });
@@ -270,8 +275,7 @@ export default function UserProfileEdit() {
       setIsLoading(false);
     }
   };
-  
-  
+
   return (
     <div>
       <CatNavbar />

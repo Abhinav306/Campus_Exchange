@@ -3,7 +3,6 @@ export const categories = [
     title: "Mobiles",
     items: ["Mobile Phones", "Accessories", "Tablets for Mobile"],
   },
-
   {
     title: "Bikes",
     items: ["Motorcycles", "Scooters", "Spare Parts", "Bicycles"],

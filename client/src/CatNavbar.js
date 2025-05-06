@@ -15,6 +15,7 @@ import {
   useColorModeValue,
   useMediaQuery,
   Link,
+  SimpleGrid,
 } from "@chakra-ui/react";
 import { HamburgerIcon } from "@chakra-ui/icons";
 import { Link as RouterLink } from "react-router-dom";
@@ -22,9 +23,8 @@ import { Link as RouterLink } from "react-router-dom";
 export default function CatNavbar() {
   const [isMobile] = useMediaQuery("(max-width: 480px)");
 
-  // Use Chakra UI's color mode values for dark theme
   const bgColor = useColorModeValue("gray.900", "gray.900");
-  const textColor = useColorModeValue("gray.900", "gray.900"); // Changed to a darker shade
+  const textColor = useColorModeValue("gray.900", "gray.100");
   const hoverBgColor = useColorModeValue("gray.700", "gray.600");
   const borderColor = useColorModeValue("gray.600", "gray.500");
   const accentColor = useColorModeValue("teal.500", "teal.300");
@@ -103,15 +103,22 @@ export default function CatNavbar() {
             </Menu>
           )}
         </Box>
-        <Flex
-          justify="center"
-          align="center"
-          flexWrap="wrap"
+
+        {/* Updated Top-Level Category Display */}
+        <Grid
+          templateColumns={[
+            "repeat(2, 1fr)",
+            "repeat(3, 1fr)",
+            "repeat(4, 1fr)",
+            "repeat(5, 1fr)",
+          ]}
+          gap={4}
+          w="100%"
           borderBottom={`1px solid ${borderColor}`}
           pb={2}
         >
           {categories.map((category, index) => (
-            <Box key={index} px={3} py={1}>
+            <GridItem key={index} textAlign="center">
               <Link
                 as={RouterLink}
                 to={`/${category.title}`}
@@ -122,9 +129,9 @@ export default function CatNavbar() {
               >
                 {category.title}
               </Link>
-            </Box>
+            </GridItem>
           ))}
-        </Flex>
+        </Grid>
       </Flex>
     </Navbar>
   );

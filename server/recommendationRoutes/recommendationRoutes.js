@@ -25,7 +25,8 @@ router.post("/chat-recommendation", async (req, res) => {
         messages: [
           {
             role: "system",
-            content: "You are a helpful assistant recommending products to users.",
+            content:
+              "You are a helpful assistant recommending products to users.",
           },
           {
             role: "user",
@@ -44,7 +45,10 @@ router.post("/chat-recommendation", async (req, res) => {
     const reply = response.data.choices[0].message.content;
     res.json({ reply });
   } catch (err) {
-    console.error("❌ AI Recommendation Error:", err.response?.data || err.message);
+    console.error(
+      "❌ AI Recommendation Error:",
+      err.response?.data || err.message
+    );
     res.status(500).json({ error: "Failed to get AI recommendation" });
   }
 });

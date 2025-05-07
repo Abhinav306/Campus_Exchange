@@ -41,11 +41,14 @@ function Login() {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/register", {
-        email,
-        password,
-        name,
-      });
+      const response = await axios.post(
+        "https://campus-backend-sdry.onrender.com/register",
+        {
+          email,
+          password,
+          name,
+        }
+      );
       console.log(response.data);
       setRegistered(true);
       toast({
@@ -67,10 +70,13 @@ function Login() {
     const password = event.target.password.value;
 
     try {
-      const response = await axios.post("http://localhost:5000/login", {
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://campus-backend-sdry.onrender.com/login",
+        {
+          email,
+          password,
+        }
+      );
       console.log(response.data);
       localStorage.setItem("authToken", response.data.token);
       localStorage.setItem("authemail", response.data.email);

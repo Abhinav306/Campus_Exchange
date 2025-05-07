@@ -15,11 +15,14 @@ function MyadCards() {
     const fetchAds = async () => {
       setIsLoading(true);
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("http://localhost:5000/myads_view", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://campus-backend-sdry.onrender.com/myads_view",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = response.data;
       setAds(data);
       setIsLoading(false);

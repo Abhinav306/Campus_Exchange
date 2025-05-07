@@ -187,7 +187,7 @@ export default function SellForm() {
 
       const token = localStorage.getItem("authToken");
       await axios.post(
-        "http://localhost:5000/add_product",
+        "https://campus-backend-sdry.onrender.com/add_product",
         {
           title,
           description,

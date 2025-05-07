@@ -37,7 +37,9 @@ function Home() {
 
   const getProducts = async () => {
     try {
-      const response = await axios.get("http://localhost:5000/getProducts");
+      const response = await axios.get(
+        "https://campus-backend-sdry.onrender.com/getProducts"
+      );
       setProducts(response.data);
       setLoading(false);
     } catch (err) {
@@ -77,17 +79,20 @@ function Home() {
       setIsPaymentLoading(true);
 
       // Get Razorpay Key
-      const keyResponse = await axios.get("http://localhost:5000/api/getkey", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const keyResponse = await axios.get(
+        "https://campus-backend-sdry.onrender.com/api/getkey",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       console.log("Key Response:", keyResponse.data);
 
       // Create Order
       const amount = Math.round(product.price * 100); // Convert to paise
       const orderResponse = await axios.post(
-        "http://localhost:5000/api/checkout",
+        "https://campus-backend-sdry.onrender.com/api/checkout",
         {
           amount: amount,
           productId: product._id,
@@ -120,7 +125,7 @@ function Home() {
           try {
             console.log("Payment successful, verifying...");
             const verificationResponse = await axios.post(
-              "http://localhost:5000/api/paymentverification",
+              "https://campus-backend-sdry.onrender.com/api/paymentverification",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,

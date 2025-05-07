@@ -32,7 +32,7 @@ export default function SearchResults() {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/search?q=${query}`
+          `https://campus-backend-sdry.onrender.com/search?q=${query}`
         );
         setResults(response.data);
         setLoading(false);
@@ -78,16 +78,19 @@ export default function SearchResults() {
       setIsPaymentLoading(true);
 
       // Get Razorpay Key
-      const keyResponse = await axios.get("http://localhost:5000/api/getkey", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const keyResponse = await axios.get(
+        "https://campus-backend-sdry.onrender.com/api/getkey",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
       // Create Order
       const amount = Math.round(product.price * 100); // Convert to paise
       const orderResponse = await axios.post(
-        "http://localhost:5000/api/checkout",
+        "https://campus-backend-sdry.onrender.com/api/checkout",
         {
           amount: amount,
           productId: product._id,
@@ -118,7 +121,7 @@ export default function SearchResults() {
         handler: async function (response) {
           try {
             const verificationResponse = await axios.post(
-              "http://localhost:5000/api/paymentverification",
+              "https://campus-backend-sdry.onrender.com/api/paymentverification",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,

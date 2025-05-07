@@ -81,7 +81,7 @@ export default function UserProfileEdit() {
     const verifyEmail = async () => {
       try {
         const response = await fetch(
-          `http://localhost:5000/verification-status?email=${authemail}`
+          `https://campus-backend-sdry.onrender.com/verification-status?email=${authemail}`
         );
         const data = await response.json();
         // Update the isVerified state based on the response
@@ -108,7 +108,7 @@ export default function UserProfileEdit() {
     setSending(true);
     try {
       const response = await axios.post(
-        "http://localhost:5000/send-verification-email",
+        "https://campus-backend-sdry.onrender.com/send-verification-email",
         { email }
       );
       // Handle the response from the server
@@ -145,7 +145,7 @@ export default function UserProfileEdit() {
     try {
       const authToken = localStorage.getItem("authToken");
       const response = await axios.post(
-        "http://localhost:5000/verify-email",
+        "https://campus-backend-sdry.onrender.com/verify-email",
         { pin: value, email: email },
         {
           headers: {
@@ -238,7 +238,7 @@ export default function UserProfileEdit() {
       const authToken = localStorage.getItem("authToken");
 
       const response = await axios.post(
-        "http://localhost:5000/profile_edit",
+        "https://campus-backend-sdry.onrender.com/profile_edit",
         { name, imageUrl: imageUrlToSend, phoneNumber },
         {
           headers: {

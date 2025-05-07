@@ -29,7 +29,7 @@ export default function CatagoryView() {
     const getProductsbyCategory = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:5000/getProductsbyCategory/${category}`
+          `https://campus-backend-sdry.onrender.com/getProductsbyCategory/${category}`
         );
         setProducts(response.data);
         setLoading(false);

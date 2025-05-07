@@ -29,11 +29,14 @@ export default function MyAds() {
     const fetchAds = async () => {
       setIsLoading(true);
       const token = localStorage.getItem("authToken");
-      const response = await axios.get("http://localhost:5000/myads_view", {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      const response = await axios.get(
+        "https://campus-backend-sdry.onrender.com/myads_view",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = response.data;
       setAds(data);
       setIsLoading(false);
@@ -55,11 +58,14 @@ export default function MyAds() {
     setDeletingCardId(id); // Set the ID of the card being deleted
     const token = localStorage.getItem("authToken");
     try {
-      await axios.delete(`http://localhost:5000/myads_delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
+      await axios.delete(
+        `https://campus-backend-sdry.onrender.com/myads_delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       setAds((prevAds) => prevAds.filter((ad) => ad._id !== id));
       toast({
         title: "Ad Deleted",

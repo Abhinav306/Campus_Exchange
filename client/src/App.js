@@ -31,7 +31,9 @@ function App() {
 
   async function checkBackendStatus() {
     try {
-      const response = await fetch("http://localhost:5000/api/check-status");
+      const response = await fetch(
+        "https://campus-backend-sdry.onrender.com/api/check-status"
+      );
       const data = await response.json();
       setBackendStatus(data.status);
     } catch (error) {
@@ -49,11 +51,14 @@ function App() {
         console.log("User is not authenticated");
         return;
       }
-      const response = await fetch("http://localhost:5000/auth-endpoint", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const response = await fetch(
+        "https://campus-backend-sdry.onrender.com/auth-endpoint",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       const data = await response.json();
 
       if (data.isAuthenticated) {

@@ -47,7 +47,7 @@ const PreviewAd = ({ auth }) => {
   const fetchData = async () => {
     try {
       const response = await axios.post(
-        `http://localhost:5000/previewad/${id}`,
+        `https://campus-backend-sdry.onrender.com/previewad/${id}`,
         {},
         {
           headers: {
@@ -62,7 +62,7 @@ const PreviewAd = ({ auth }) => {
       setOwn(false);
       try {
         const notlogedindata = await axios.post(
-          `http://localhost:5000/previewad/notloggedin/${id}`
+          `https://campus-backend-sdry.onrender.com/previewad/notloggedin/${id}`
         );
         setData(notlogedindata.data.product);
         setLoading(false);
@@ -108,16 +108,19 @@ const PreviewAd = ({ auth }) => {
       setIsPaymentLoading(true);
 
       // Get Razorpay Key
-      const keyResponse = await axios.get("http://localhost:5000/api/getkey", {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      const keyResponse = await axios.get(
+        "https://campus-backend-sdry.onrender.com/api/getkey",
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       // Create Order
       const amount = Math.round(data.price * 100); // Convert to paise
       const orderResponse = await axios.post(
-        "http://localhost:5000/api/checkout",
+        "https://campus-backend-sdry.onrender.com/api/checkout",
         {
           amount: amount,
           productId: data._id,
@@ -148,7 +151,7 @@ const PreviewAd = ({ auth }) => {
         handler: async function (response) {
           try {
             const verificationResponse = await axios.post(
-              "http://localhost:5000/api/paymentverification",
+              "https://campus-backend-sdry.onrender.com/api/paymentverification",
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -227,11 +230,14 @@ const PreviewAd = ({ auth }) => {
   const handleRemove = async () => {
     try {
       setIsRemoving(true);
-      await axios.delete(`http://localhost:5000/myads_delete/${id}`, {
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-        },
-      });
+      await axios.delete(
+        `https://campus-backend-sdry.onrender.com/myads_delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
       setIsRemoving(false);
       toast({
         title: "Ad Removed",

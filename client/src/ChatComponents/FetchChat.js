@@ -34,7 +34,7 @@ export default function FetchChat({ id, toData, to }) {
         const currentMessageLength = newMessages.length;
         try {
           const response = await axios.get(
-            "http://localhost:5000/api/new-messages",
+            "https://campus-backend-sdry.onrender.com/api/new-messages",
             {
               params: { id, to }, // Pass data as query parameters
               headers: {

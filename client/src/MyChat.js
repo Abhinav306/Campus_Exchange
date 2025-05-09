@@ -57,7 +57,7 @@ export default function MyChat() {
         setChatScreen(true);
         try {
           const response = await axios.post(
-            `https://campus-backend-sdry.onrender.com/previewad/${id}`,
+            `http://localhost:5000/previewad/${id}`,
             {},
             {
               headers: {
@@ -78,9 +78,7 @@ export default function MyChat() {
         setChatScreen(true);
         try {
           axios
-            .get(
-              `https://campus-backend-sdry.onrender.com/profilesearch?useremail=${useremail}`
-            )
+            .get(`http://localhost:5000/profilesearch?useremail=${useremail}`)
             .then((response) => {
               setProfileData(response.data);
               setIsLoading(false);
@@ -106,7 +104,7 @@ export default function MyChat() {
     setIsLoading(true);
     axios
       .post(
-        `https://campus-backend-sdry.onrender.com/deletechat/${id}`,
+        `http://localhost:5000/deletechat/${id}`,
         {},
         {
           headers: {

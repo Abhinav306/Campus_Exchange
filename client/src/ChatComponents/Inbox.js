@@ -13,14 +13,11 @@ export default function Inbox() {
   useEffect(() => {
     const fetchNewChats = async () => {
       try {
-        const response = await axios.get(
-          "https://campus-backend-sdry.onrender.com/api/newchats",
-          {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          }
-        );
+        const response = await axios.get("http://localhost:5000/api/newchats", {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
         const data = response.data; // Use response.data, no need for await
         setNewChats(data);
         setIsLoading(false);

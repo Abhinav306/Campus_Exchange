@@ -32,9 +32,7 @@ export default function SearchProfile() {
   }
   useEffect(() => {
     axios
-      .get(
-        `https://campus-backend-sdry.onrender.com/profilesearch?useremail=${useremail}`
-      )
+      .get(`http://localhost:5000/profilesearch?useremail=${useremail}`)
       .then((response) => {
         setProfileData(response.data);
         setIsLoading(false);
@@ -46,7 +44,7 @@ export default function SearchProfile() {
     const getProducts = async () => {
       try {
         const response = await axios.get(
-          `https://campus-backend-sdry.onrender.com/getProductsbyemail?useremail=${useremail}`
+          `http://localhost:5000/getProductsbyemail?useremail=${useremail}`
         );
         setProducts(response.data);
         setIsLoading(false);

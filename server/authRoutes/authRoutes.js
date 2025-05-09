@@ -1,137 +1,146 @@
-const express = require('express');
-const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User'); // Import the User model here
+const express = require("express");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+require("dotenv").config();
 
-const app = express();
+const router = express.Router();
 const auth = require("../middleware/auth");
 
-app.get('/api/check-status', (req, res) => {
-  const isBackendOnline = true;
+// Get JWT secret from environment variables - this must match in all files
+const JWT_SECRET = process.env.JWT_SECRET || "RANDOM-TOKEN";
+const JWT_EXPIRES_IN = "24h";
 
-  if (isBackendOnline) {
-    res.json({ status: 'online' });
-  } else {
-    res.json({ status: 'offline' });
-  }
+router.get("/api/check-status", (req, res) => {
+  res.json({ status: "online" });
 });
 
-app.get("/auth-endpoint", auth, (request, response) => {
+router.get("/auth-endpoint", auth, (request, response) => {
   response.json({ isAuthenticated: true });
 });
 
-app.post("/register", (request, response) => {
-    // check if user exists first
-    User.findOne({ email: request.body.email })
-      .then((foundUser) => {
-        // renamed variable to foundUser to avoid redefining user
-        if (foundUser) {
-          // check if user already exists
-          return response.status(409).json({
-            // send bad request status with error message
-            message: "User already exists",
-          });
-        }
-        // hash the password
-        bcrypt
-          .hash(request.body.password, 10)
-          .then((hashedPassword) => {
-            // create a new user instance and collect the data
-            const newUser = new User({
-              email: request.body.email,
-              name: request.body.name,
-              password: hashedPassword,
-            });
-            // save the new user
-            newUser
-              .save()
-              // return success if the new user is added to the database successfully
-              .then((result) => {
-                response.status(201).send({
-                  message: "User Created Successfully",
-                  result,
-                });
-              })
-              // catch error if the new user wasn't added successfully to the database
-              .catch((error) => {
-                response.status(500).send({
-                  message: "Error creating user",
-                  error,
-                });
-              });
-          })
-          // catch error if the password hash isn't successful
-          .catch((e) => {
-            response.status(500).send({
-              message: "Password was not hashed successfully",
-              e,
-            });
-          });
-      })
-      .catch((error) => {
-        // send error message to client
-        response.status(500).send({
-          message: "Error creating user",
-          error,
+router.post("/register", (request, response) => {
+  // Check if user exists first
+  User.findOne({ email: request.body.email })
+    .then((foundUser) => {
+      if (foundUser) {
+        return response.status(409).json({
+          message: "User already exists",
         });
-      });
-  });
-  
-  // login endpoint
-  app.post("/login", (request, response) => {
-    // check if email exists
-    User.findOne({ email: request.body.email })
-      // if email exists
-      .then((user) => {
-        // compare the password entered and the hashed password found
-        bcrypt
-          .compare(request.body.password, user.password)
-  
-          // if the passwords match
-          .then((passwordCheck) => {
-            // check if password matches
-            if (!passwordCheck) {
-              return response.status(400).send({
-                message: "Passwords does not match",
+      }
+
+      // Hash the password
+      bcrypt
+        .hash(request.body.password, 10)
+        .then((hashedPassword) => {
+          // Create a new user
+          const newUser = new User({
+            email: request.body.email,
+            name: request.body.name,
+            password: hashedPassword,
+          });
+
+          // Save the new user
+          newUser
+            .save()
+            .then((result) => {
+              response.status(201).send({
+                message: "User Created Successfully",
+                result,
+              });
+            })
+            .catch((error) => {
+              console.error("Error saving user:", error);
+              response.status(500).send({
+                message: "Error creating user",
                 error,
               });
-            }
-  
-            //   create JWT token
-            const token = jwt.sign(
-              {
-                userId: user._id,
-                userEmail: user.email,
-              },
-              "RANDOM-TOKEN",
-              { expiresIn: "24h" }
-            );
-  
-            //   return success response
-            response.status(200).send({
-              message: "Login Successful",
-              email: user.email,
-              token,
-              name: user.name,
-              picture: user.picture,
-              phone: user.phonenumber,
             });
-          })
-          // catch error if password does not match
-          .catch((error) => {
-            response.status(400).send({
-              message: "Passwords does not match",
-              error,
-            });
+        })
+        .catch((e) => {
+          console.error("Password hashing error:", e);
+          response.status(500).send({
+            message: "Password was not hashed successfully",
+            e,
           });
-      })
-      // catch error if email does not exist
-      .catch((e) => {
-        response.status(404).send({
-          message: "Email not found",
-          e,
         });
+    })
+    .catch((error) => {
+      console.error("User lookup error:", error);
+      response.status(500).send({
+        message: "Error creating user",
+        error,
       });
-  });
+    });
+});
 
-module.exports = app;
+// Login endpoint
+router.post("/login", (request, response) => {
+  // Check if email exists
+  User.findOne({ email: request.body.email })
+    .then((user) => {
+      if (!user) {
+        return response.status(404).send({
+          message: "Email not found",
+        });
+      }
+
+      // Compare the password
+      bcrypt
+        .compare(request.body.password, user.password)
+        .then((passwordCheck) => {
+          // Check if password matches
+          if (!passwordCheck) {
+            return response.status(400).send({
+              message: "Passwords do not match",
+            });
+          }
+
+          // Create JWT token
+          const token = jwt.sign(
+            {
+              userId: user._id,
+              userEmail: user.email,
+            },
+            JWT_SECRET,
+            { expiresIn: JWT_EXPIRES_IN }
+          );
+
+          console.log(
+            `Token created for ${user.email} with expiration: ${new Date(
+              Date.now() + 24 * 60 * 60 * 1000
+            )}`
+          );
+          console.log(
+            "JWT Secret used (first 3 chars):",
+            JWT_SECRET.substring(0, 3) + "..."
+          );
+
+          // Return success response
+          response.status(200).send({
+            message: "Login Successful",
+            email: user.email,
+            token,
+            name: user.name,
+            picture: user.picture,
+            phone: user.phonenumber,
+          });
+        })
+        .catch((error) => {
+          console.error("Password comparison error:", error);
+          response.status(400).send({
+            message: "Passwords does not match",
+            error,
+          });
+        });
+    })
+    .catch((e) => {
+      console.error("User lookup error:", e);
+      response.status(404).send({
+        message: "Email not found",
+        e,
+      });
+    });
+});
+
+module.exports = router;

@@ -16,7 +16,7 @@ export default function SendChat({ id, to }) {
     e.preventDefault();
     if (message) {
       const response = await axios.post(
-        "https://campus-backend-sdry.onrender.com/sendMessage",
+        "http://localhost:5000/sendMessage",
         { message, id, to },
         {
           headers: {

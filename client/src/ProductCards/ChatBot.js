@@ -13,16 +13,13 @@ const ChatBot = () => {
     setInput("");
 
     try {
-      const res = await fetch(
-        "https://campus-backend-sdry.onrender.com/chat-recommendation",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ message: input }),
-        }
-      );
+      const res = await fetch("http://localhost:5000/chat-recommendation", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ message: input }),
+      });
 
       const data = await res.json();
       const botMsg = { sender: "bot", text: data.reply };

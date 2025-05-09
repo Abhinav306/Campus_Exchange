@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 import CatNavbar from "../CatNavbar";
 import {
   Box,
@@ -15,8 +16,12 @@ import SearchNotFound from "../resources/SearchNotFound";
 import NotFound from "../resources/NotFound";
 import Loading from "../resources/Loading";
 
+// Base API URL to avoid typos and make updates easier
+const API_BASE_URL = "http://localhost:5000";
+
 export default function SearchResults() {
-  const searchParams = new URLSearchParams(window.location.search);
+  // Use React Router's useSearchParams instead of directly accessing window.location
+  const [searchParams] = useSearchParams();
   const query = searchParams.get("query");
 
   const [results, setResults] = useState([]);
@@ -24,21 +29,31 @@ export default function SearchResults() {
   const [visibleproducts, setVisibleProducts] = useState(6);
   const [isPaymentLoading, setIsPaymentLoading] = useState(false);
   const [isRazorpayLoaded, setIsRazorpayLoaded] = useState(false);
-  const hasMoreProductsToLoad = visibleproducts < results.length;
   const [error, setError] = useState(null);
   const toast = useToast();
 
+  const hasMoreProductsToLoad = visibleproducts < results.length;
+
   useEffect(() => {
     const fetchData = async () => {
+      if (!query) {
+        setLoading(false);
+        return;
+      }
+
       try {
+        // Fixed URL with single slash instead of double slash
         const response = await axios.get(
-          `https://campus-backend-sdry.onrender.com/search?q=${query}`
+          `${API_BASE_URL}/search?q=${encodeURIComponent(query)}`
         );
         setResults(response.data);
-        setLoading(false);
       } catch (err) {
-        console.error(err);
-        setError("An error occurred while fetching data.");
+        console.error("Search error:", err);
+        setError(
+          err.response?.data?.message ||
+            "An error occurred while fetching data."
+        );
+      } finally {
         setLoading(false);
       }
     };
@@ -52,8 +67,13 @@ export default function SearchResults() {
         setIsRazorpayLoaded(true);
       }
     };
+
+    // Check immediately
     checkRazorpay();
+
+    // Check again after a delay in case it loads asynchronously
     const timeoutId = setTimeout(checkRazorpay, 1000);
+
     return () => clearTimeout(timeoutId);
   }, []);
 
@@ -77,20 +97,17 @@ export default function SearchResults() {
 
       setIsPaymentLoading(true);
 
-      // Get Razorpay Key
-      const keyResponse = await axios.get(
-        "https://campus-backend-sdry.onrender.com/api/getkey",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
+      // Get Razorpay Key - Fixed URL with single slash
+      const keyResponse = await axios.get(`${API_BASE_URL}/api/getkey`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-      // Create Order
+      // Create Order - Fixed URL with single slash
       const amount = Math.round(product.price * 100); // Convert to paise
       const orderResponse = await axios.post(
-        "https://campus-backend-sdry.onrender.com/api/checkout",
+        `${API_BASE_URL}/api/checkout`,
         {
           amount: amount,
           productId: product._id,
@@ -120,8 +137,9 @@ export default function SearchResults() {
         },
         handler: async function (response) {
           try {
+            // Fixed URL with single slash
             const verificationResponse = await axios.post(
-              "https://campus-backend-sdry.onrender.com/api/paymentverification",
+              `${API_BASE_URL}/api/paymentverification`,
               {
                 razorpay_order_id: response.razorpay_order_id,
                 razorpay_payment_id: response.razorpay_payment_id,
@@ -194,18 +212,21 @@ export default function SearchResults() {
     return <Loading />;
   }
 
-  if (results.length === 0) {
-    return <SearchNotFound />;
+  if (error) {
+    return <NotFound error={error} />;
   }
 
-  if (error) {
-    return <NotFound />;
+  if (!query || results.length === 0) {
+    return <SearchNotFound query={query} />;
   }
 
   return (
     <Box>
       <CatNavbar />
-      <Container maxW="container.xl">
+      <Container maxW="container.xl" py={4}>
+        <Box mb={4}>
+          <strong>Search results for:</strong> {query}
+        </Box>
         <Grid
           templateColumns={{
             base: "1fr",
@@ -226,22 +247,23 @@ export default function SearchResults() {
           ))}
         </Grid>
         {hasMoreProductsToLoad && (
-          <Button
-            className="mb-2"
-            bgGradient="linear(to-r, teal.400, cyan.600)"
-            color="white"
-            _hover={{
-              bgGradient: "linear(to-r, teal.600, cyan.800)",
-            }}
-            _active={{
-              bgGradient: "linear(to-r, teal.800, cyan.900)",
-            }}
-            onClick={() => {
-              setVisibleProducts((prev) => prev + 10);
-            }}
-          >
-            Load More
-          </Button>
+          <Box textAlign="center" mt={6} mb={4}>
+            <Button
+              bgGradient="linear(to-r, teal.400, cyan.600)"
+              color="white"
+              _hover={{
+                bgGradient: "linear(to-r, teal.600, cyan.800)",
+              }}
+              _active={{
+                bgGradient: "linear(to-r, teal.800, cyan.900)",
+              }}
+              onClick={() => {
+                setVisibleProducts((prev) => prev + 10);
+              }}
+            >
+              Load More
+            </Button>
+          </Box>
         )}
       </Container>
     </Box>

@@ -6,7 +6,7 @@ function GoogleSignIn() {
   const responseMessage = (response) => {
     // console.log(response);
     axios
-      .post("https://campus-backend-sdry.onrender.com/google-auth", {
+      .post("http://localhost:5000/google-auth", {
         credential: response.credential,
       })
       .then((response) => {
